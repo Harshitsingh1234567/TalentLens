@@ -1,0 +1,87 @@
+.formCard {
+  margin-bottom: var(--space-6);
+}
+
+.selectorEmptyStates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.idFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.submit {
+  margin-top: var(--space-2);
+}
+
+.resultCard {
+  padding-top: var(--space-7);
+}
+
+.scoreHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-7);
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.componentScores {
+  flex: 1;
+  min-width: 0;
+}
+
+.componentScores > :last-child {
+  margin-bottom: 0;
+}
+
+.skillsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.skillsSection h3 {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.explanationSection h3 {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.explanation {
+  margin: 0;
+  color: var(--color-text);
+  line-height: var(--line-height-body);
+}
+
+.runAnother {
+  margin-top: var(--space-6);
+}
+
+@media (max-width: 720px) {
+  .idFields,
+  .skillsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .scoreHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-5);
+  }
+
+  .componentScores {
+    width: 100%;
+  }
+}

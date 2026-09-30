@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.resumeanalyzer</groupId>
+    <artifactId>resume-analyzer</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>resume-analyzer</name>
+    <description>AI-Powered Resume &amp; Job Match Analyzer - Backend (Phase 2: Resume &amp; JD Ingestion)</description>
+
+    <properties>
+        <java.version>21</java.version>
+        <!-- Google Gen AI Java SDK (official, GA) version, used by the Phase 5
+             Gemini integration. Pinned explicitly (rather than left to a BOM)
+             so upgrades are a deliberate, reviewed change.
+             MUST stay at 1.54.0 or later: versions before 1.54.0 ship a
+             META-INF/services/com.fasterxml.jackson.databind.Module entry
+             that references com.fasterxml.jackson.module.kotlin.KotlinModule
+             without actually depending on jackson-module-kotlin. That is a
+             confirmed upstream bug, fixed upstream in 1.54.0 ("Missing
+             jackson-module-kotlin in classpath") - see
+             https://github.com/googleapis/java-genai/releases/tag/v1.54.0
+             On the older version, any code path that asks Jackson to
+             discover all modules on the classpath (which is exactly what
+             Hibernate 6's JacksonIntegration does when it builds its shared
+             ObjectMapper) walks that stale service-provider file and throws
+             ServiceConfigurationError, because the referenced class isn't
+             actually present anywhere on the classpath - unrelated to how
+             this project's own Jackson/Hibernate configuration is set up. -->
+        <google-genai.version>1.54.0</google-genai.version>
+        <!-- Override Spring Boot 3.3.4's managed Mockito (this is the
+             documented Spring Boot extension point for this exact purpose -
+             see https://docs.spring.io/spring-boot/appendix/dependency-versions/properties.html).
+             Bumped to a version whose bundled Byte Buddy has full,
+             non-experimental JDK 21 (class file version 65) support, fixing
+             "Mockito cannot mock this class"/NoClassDefFoundError failures
+             observed running the test suite on JDK 21. Test-scope only -
+             does not affect the production artifact. -->
+        <mockito.version>5.23.0</mockito.version>
+    </properties>
+
+    <dependencies>
+        <!-- Core web layer (Controllers) - required now so the Phase 0 exception
+             handling scaffolding (@ControllerAdvice) and future REST layers compile. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Persistence layer -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Spring Security - stateless JWT authentication (Phase 1) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- Jakarta Bean Validation for request DTOs (Phase 1) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- MySQL driver -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- JWT library, used by JwtService (Phase 1) to sign and validate
+             stateless access tokens. -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Apache PDFBox, used by ResumeParsingService (Phase 2) to extract
+             raw text from uploaded PDF resumes. -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.31</version>
+        </dependency>
+
+        <!-- Apache POI (OOXML), used by ResumeParsingService (Phase 2) to
+             extract raw text from uploaded DOCX resumes. Pulls in poi (core)
+             transitively. -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+
+        <!-- Apache OpenNLP, used by TextNormalizer (Phase 3) for
+             deterministic tokenization of resume/job-description text as
+             part of the matching/scoring engine. -->
+        <dependency>
+            <groupId>org.apache.opennlp</groupId>
+            <artifactId>opennlp-tools</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+
+        <!-- Official Google Gen AI Java SDK, used exclusively by
+             com.resumeanalyzer.ai.client.GeminiTextGenerationClient (Phase 5)
+             to call the Gemini API. This is the only class in the project
+             allowed to import com.google.genai.* - everything else depends
+             on the provider-agnostic com.resumeanalyzer.ai abstractions, so
+             the SDK stays swappable/isolated. -->
+        <dependency>
+            <groupId>com.google.genai</groupId>
+            <artifactId>google-genai</artifactId>
+            <version>${google-genai.version}</version>
+        </dependency>
+
+        <!-- Testing: JUnit 5 + Mockito (bundled in spring-boot-starter-test) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- In-memory database used ONLY for the Phase 0 context-load test,
+             so the test does not depend on an external MySQL server being available.
+             Production configuration (application.yml) remains MySQL. -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Security test support for context loading with Spring Security on the classpath -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- JDK 21 requires this flag to permit dynamic
+                         java-agent self-attachment without a warning/failure;
+                         Mockito's default inline mock maker self-attaches a
+                         Byte Buddy instrumentation agent to the test JVM at
+                         first use. -->
+                    <argLine>-XX:+EnableDynamicAgentLoading</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

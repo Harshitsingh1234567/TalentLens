@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: resume-analyzer
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:resume_analyzer}?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      # 'update' is appropriate for local development at this stage of the
+      # project. This should be revisited (e.g. in favor of a migration
+      # tool) once the schema stabilizes across later phases.
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+  # Resume uploads (Phase 2) are text-based PDF/DOCX documents; 5MB is a
+  # generous cap comfortably above any realistic resume file size, chosen
+  # as a defensive default since the specification does not pin down an
+  # exact limit. Per-file size is unchanged for Phase 6 bulk screening
+  # uploads (POST /api/screening-batches reuses the same per-file 5MB
+  # cap); max-request-size is raised to accommodate multiple files in one
+  # request, bounded further by ScreeningBatchService.MAX_FILES_PER_BATCH
+  # (50) as a sanity limit on a single request - not a queue/rate limiter.
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 100MB
+
+# Match-score weighting configuration, consumed by MatchScoringEngine
+# (Phase 3). See MatchingWeightsProperties.
+matching:
+  weights:
+    skills: 0.34
+    experience: 0.33
+    semantic: 0.33
+
+# JWT authentication configuration (Phase 1). See JwtProperties.
+#
+# The default secret below is a DEVELOPMENT-ONLY fallback so the app can
+# run locally without extra setup. It is NOT a real secret. Any shared,
+# staging, or production environment MUST supply its own value via the
+# JWT_SECRET environment variable.
+security:
+  jwt:
+    secret: ${JWT_SECRET:dev-only-insecure-default-secret-do-not-use-in-production-change-me}
+    expiration-ms: ${JWT_EXPIRATION_MS:3600000}
+
+# Google Gemini integration (Phase 5). See GeminiProperties.
+#
+# api-key is intentionally blank by default - it MUST be supplied via the
+# GEMINI_API_KEY environment variable. With no key configured, the AI
+# enhancement layer safely falls back to "no AI insights" for every
+# analysis (see GeminiAnalysisEnhancer) rather than failing requests, so
+# the application runs normally without one.
+#
+# fallback-model (Phase 9): if a call to `model` fails with a transient
+# error (429/503/timeout/network failure), GeminiTextGenerationClient
+# retries once against fallback-model before giving up. Non-transient
+# failures (e.g. an empty/invalid response) do not trigger this retry.
+ai:
+  gemini:
+    enabled: ${GEMINI_ENABLED:true}
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-3.6-flash}
+    fallback-model: ${GEMINI_FALLBACK_MODEL:gemini-3.5-flash}
+    timeout-seconds: ${GEMINI_TIMEOUT_SECONDS:20}
+    max-output-tokens: ${GEMINI_MAX_OUTPUT_TOKENS:2048}

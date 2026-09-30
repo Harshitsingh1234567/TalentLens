@@ -1,0 +1,49 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.brandMark {
+  display: inline-flex;
+  color: var(--color-primary);
+}
+
+.brandName {
+  font-weight: var(--weight-bold);
+  font-size: var(--font-size-lg);
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.tagline {
+  margin: 0 0 var(--space-6);
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-faint);
+}
+
+.submit {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+.switchLink {
+  margin: var(--space-5) 0 0;
+  font-size: var(--font-size-sm);
+  text-align: center;
+}

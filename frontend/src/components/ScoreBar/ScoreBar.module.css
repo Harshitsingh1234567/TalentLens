@@ -1,0 +1,61 @@
+.wrapper {
+  margin-bottom: var(--space-4);
+}
+
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.percentage {
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  display: block;
+  width: 100%;
+  height: 8px;
+  border: none;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.bar::-webkit-progress-bar {
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-pill);
+}
+
+.bar::-webkit-progress-value {
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+  transition: width var(--transition-base);
+}
+
+.bar::-moz-progress-bar {
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+}
+
+.large .label {
+  font-size: var(--font-size-md);
+}
+
+.large .percentage {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--weight-bold);
+}
+
+.large .bar {
+  height: 12px;
+}

@@ -1,0 +1,133 @@
+.formsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+  align-items: start;
+}
+
+.formsGrid h2 {
+  font-size: var(--font-size-lg);
+}
+
+.selectorEmptyStates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.resultCard {
+  padding-top: var(--space-6);
+}
+
+.resultMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-bottom: var(--space-5);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.metaItem {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-faint);
+}
+
+.metaItem strong {
+  color: var(--color-text-muted);
+  font-weight: var(--weight-semibold);
+}
+
+.tabularNums {
+  font-variant-numeric: tabular-nums;
+}
+
+.scoreHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-7);
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.componentScores {
+  flex: 1;
+  min-width: 0;
+}
+
+.componentScores > :last-child {
+  margin-bottom: 0;
+}
+
+.explanation {
+  margin: 0 0 var(--space-6);
+  line-height: var(--line-height-body);
+}
+
+.skillsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.skillsGrid h3 {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.insightsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.insightsHeading {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.runAnother {
+  margin-top: var(--space-5);
+}
+
+.questionsCard {
+  margin-top: var(--space-6);
+}
+
+.questionsCard h2 {
+  font-size: var(--font-size-lg);
+}
+
+.questionsCard > p {
+  margin-top: calc(var(--space-2) * -1);
+}
+
+.questionsResult {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 760px) {
+  .formsGrid,
+  .skillsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .scoreHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-5);
+  }
+
+  .componentScores {
+    width: 100%;
+  }
+}

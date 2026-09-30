@@ -1,0 +1,55 @@
+# Test-scope configuration.
+#
+# This file lives under src/test/resources and is only ever placed on the
+# TEST classpath by Maven; it does not affect the production configuration
+# in src/main/resources/application.yml (which remains MySQL, per the
+# finalized architecture decisions).
+#
+# It exists so the Phase 0 context-load test does not depend on an external
+# MySQL server being available/reachable, which would make the test
+# unreliable in CI or on a fresh machine. An in-memory H2 database is used
+# purely to let the Spring context (and JPA/Hibernate) initialize during
+# the test run.
+spring:
+  application:
+    name: resume-analyzer
+
+  datasource:
+    url: jdbc:h2:mem:resume_analyzer_test;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+matching:
+  weights:
+    skills: 0.34
+    experience: 0.33
+    semantic: 0.33
+
+# Deterministic, test-only JWT secret. Never used outside the test
+# classpath; production configuration is unaffected (see
+# src/main/resources/application.yml).
+security:
+  jwt:
+    secret: test-only-fixed-secret-for-deterministic-jwt-tests-not-for-real-use
+    expiration-ms: 3600000
+
+# Explicitly disabled for the whole test suite (Phase 5). No API key is
+# configured either, so GeminiProperties#isConfigured() is false either
+# way - this is belt-and-braces so it stays obviously true even if a future
+# test resource change adds a key for some other purpose. No test in this
+# suite may perform a live Gemini call.
+ai:
+  gemini:
+    enabled: false

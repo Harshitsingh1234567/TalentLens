@@ -1,0 +1,93 @@
+# One skill phrase per line, lowercase. Blank lines and lines starting
+# with '#' are ignored. Multi-word phrases are matched as substrings of
+# normalized text (see SkillMatcher).
+java
+python
+javascript
+typescript
+sql
+spring boot
+spring framework
+hibernate
+react
+angular
+vue
+node.js
+docker
+kubernetes
+aws
+azure
+gcp
+git
+jenkins
+ci/cd
+rest api
+microservices
+mongodb
+postgresql
+mysql
+redis
+kafka
+rabbitmq
+linux
+agile
+scrum
+junit
+mockito
+maven
+gradle
+html
+css
+c++
+c#
+.net
+machine learning
+deep learning
+data analysis
+tensorflow
+pytorch
+pandas
+numpy
+tableau
+power bi
+excel
+project management
+leadership
+communication
+problem solving
+teamwork
+devops
+terraform
+ansible
+graphql
+oauth
+jwt
+unit testing
+tdd
+object oriented programming
+design patterns
+system design
+cloud computing
+big data
+hadoop
+spark
+elasticsearch
+nginx
+apache
+bash scripting
+api design
+software architecture
+php
+ruby
+go
+swift
+kotlin
+scala
+r
+sass
+webpack
+jquery
+django
+flask
+laravel
+express.js
